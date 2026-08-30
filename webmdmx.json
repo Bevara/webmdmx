@@ -1,0 +1,14 @@
+{
+    "name": "webmdmx",
+    "description": "WebM/Matroska demultiplexer",
+    "filters":["webmdmx"],
+    "help": "This filter demultiplexes WebM/Matroska files using nestegg, exposing the AV1 video track (if any) for a downstream AV1 decoder.",
+    "support": [
+        "video"
+    ],
+    "sources":"https://bevara.ddns.net/sources/webmdmx.accessor",
+    "filter_source":{
+        "webmdmx" : "dmx_webm.c"
+    },
+    "licence_required":false
+}
