@@ -10,8 +10,9 @@
  *  full local file and opens it directly via gf_fopen/gf_fseek/gf_fread,
  *  wrapped as a nestegg_io.
  *
- *  Only the AV1 video track (if any) is exposed on output - this is
- *  the only combination currently paired with a decoder (libaom).
+ *  Only a single AV1/VP8/VP9 video track (if any) is exposed on output
+ *  - these are the codecs currently paired with a decoder (libaom for
+ *  AV1, libvpx for VP8/VP9). Audio tracks (Vorbis/Opus) are ignored.
  */
 
 #include <gpac/filters.h>
@@ -139,8 +140,21 @@ static GF_Err webmdmx_open(GF_Filter *filter, GF_WebMDmxCtx *ctx)
 
 	for (i = 0; i < track_count; i++)
 	{
-		if ((nestegg_track_type(ctx->demux, i) == NESTEGG_TRACK_VIDEO)
-			&& (nestegg_track_codec_id(ctx->demux, i) == NESTEGG_CODEC_AV1))
+		int nestegg_codec;
+		u32 gpac_codec;
+
+		if (nestegg_track_type(ctx->demux, i) != NESTEGG_TRACK_VIDEO)
+			continue;
+
+		nestegg_codec = nestegg_track_codec_id(ctx->demux, i);
+		switch (nestegg_codec)
+		{
+		case NESTEGG_CODEC_AV1: gpac_codec = GF_CODECID_AV1; break;
+		case NESTEGG_CODEC_VP8: gpac_codec = GF_CODECID_VP8; break;
+		case NESTEGG_CODEC_VP9: gpac_codec = GF_CODECID_VP9; break;
+		default: continue;
+		}
+
 		{
 			nestegg_video_params vparams;
 			memset(&vparams, 0, sizeof(vparams));
@@ -150,7 +164,7 @@ static GF_Err webmdmx_open(GF_Filter *filter, GF_WebMDmxCtx *ctx)
 
 			ctx->opid = gf_filter_pid_new(filter);
 			gf_filter_pid_set_property(ctx->opid, GF_PROP_PID_STREAM_TYPE, &PROP_UINT(GF_STREAM_VISUAL));
-			gf_filter_pid_set_property(ctx->opid, GF_PROP_PID_CODECID, &PROP_UINT(GF_CODECID_AV1));
+			gf_filter_pid_set_property(ctx->opid, GF_PROP_PID_CODECID, &PROP_UINT(gpac_codec));
 			gf_filter_pid_set_property(ctx->opid, GF_PROP_PID_UNFRAMED, &PROP_BOOL(GF_FALSE));
 			gf_filter_pid_set_property(ctx->opid, GF_PROP_PID_TIMESCALE, &PROP_UINT(1000000000));
 
@@ -165,7 +179,7 @@ static GF_Err webmdmx_open(GF_Filter *filter, GF_WebMDmxCtx *ctx)
 
 	if (!ctx->has_video_track)
 	{
-		GF_LOG(GF_LOG_WARNING, GF_LOG_CONTAINER, ("[WebMDmx] No AV1 video track found in WebM/Matroska container\n"));
+		GF_LOG(GF_LOG_WARNING, GF_LOG_CONTAINER, ("[WebMDmx] No AV1/VP8/VP9 video track found in WebM/Matroska container\n"));
 	}
 
 	return GF_OK;
@@ -265,12 +279,14 @@ static const GF_FilterCapability WebMDmxCaps[] =
 		CAP_STRING(GF_CAPS_INPUT, GF_PROP_PID_FILEPATH, "*"),
 		CAP_UINT(GF_CAPS_OUTPUT, GF_PROP_PID_STREAM_TYPE, GF_STREAM_VISUAL),
 		CAP_UINT(GF_CAPS_OUTPUT, GF_PROP_PID_CODECID, GF_CODECID_AV1),
+		CAP_UINT(GF_CAPS_OUTPUT, GF_PROP_PID_CODECID, GF_CODECID_VP8),
+		CAP_UINT(GF_CAPS_OUTPUT, GF_PROP_PID_CODECID, GF_CODECID_VP9),
 };
 
 GF_FilterRegister WebMDmxRegister = {
 	.name = "webmdmx",
 	GF_FS_SET_DESCRIPTION("WebM/Matroska demultiplexer")
-		GF_FS_SET_HELP("This filter demultiplexes WebM/Matroska files using nestegg, exposing the AV1 video track (if any) framed for a downstream AV1 decoder.")
+		GF_FS_SET_HELP("This filter demultiplexes WebM/Matroska files using nestegg, exposing the AV1/VP8/VP9 video track (if any) framed for a downstream decoder (libaom for AV1, libvpx for VP8/VP9).")
 			.private_size = sizeof(GF_WebMDmxCtx),
 	SETCAPS(WebMDmxCaps),
 	.configure_pid = webmdmx_configure_pid,
@@ -279,7 +295,7 @@ GF_FilterRegister WebMDmxRegister = {
 	.finalize = webmdmx_finalize,
 };
 
-const GF_FilterRegister * EMSCRIPTEN_KEEPALIVE dynCall_webmdmx_register(GF_FilterSession *session)
+const GF_FilterRegister * EMSCRIPTEN_KEEPALIVE webmdmx_register(GF_FilterSession *session)
 {
 	return &WebMDmxRegister;
 }
@@ -287,5 +303,5 @@ const GF_FilterRegister * EMSCRIPTEN_KEEPALIVE dynCall_webmdmx_register(GF_Filte
 #include "filter_register.h"
 __attribute__((constructor))
 void register_webmdmx(void) {
-    gf_filter_auto_register("webmdmx", dynCall_webmdmx_register);
+    gf_filter_auto_register("webmdmx", webmdmx_register);
 }

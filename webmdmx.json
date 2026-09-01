@@ -2,7 +2,7 @@
     "name": "webmdmx",
     "description": "WebM/Matroska demultiplexer",
     "filters":["webmdmx"],
-    "help": "This filter demultiplexes WebM/Matroska files using nestegg, exposing the AV1 video track (if any) for a downstream AV1 decoder.",
+    "help": "This filter demultiplexes WebM/Matroska files using nestegg, exposing the AV1/VP8/VP9 video track (if any) for a downstream decoder (libaom for AV1, libvpx for VP8/VP9).",
     "support": [
         "video"
     ],
