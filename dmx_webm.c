@@ -276,6 +276,12 @@ static const GF_FilterCapability WebMDmxCaps[] =
 	{
 		CAP_UINT(GF_CAPS_INPUT, GF_PROP_PID_STREAM_TYPE, GF_STREAM_FILE),
 		CAP_STRING(GF_CAPS_INPUT, GF_PROP_PID_FILE_EXT, "webm|mkv"),
+		/* Sans capacite MIME, ce demultiplexeur est injoignable via httpin : des
+		 * qu'un serveur renvoie un Content-Type exploitable, gpac passe le PID en
+		 * ext_not_trusted et cesse d'apparier sur l'extension (cf. filter.c,
+		 * gf_filter_pid_raw_new). Les demultiplexeurs amont equivalents (dmx_avi,
+		 * dmx_mpegps, dmx_ogg) declarent tous leur MIME pour cette raison. */
+		CAP_STRING(GF_CAPS_INPUT, GF_PROP_PID_MIME, "video/webm|audio/webm|video/x-matroska|audio/x-matroska|video/matroska|application/x-matroska"),
 		CAP_STRING(GF_CAPS_INPUT, GF_PROP_PID_FILEPATH, "*"),
 		CAP_UINT(GF_CAPS_OUTPUT, GF_PROP_PID_STREAM_TYPE, GF_STREAM_VISUAL),
 		CAP_UINT(GF_CAPS_OUTPUT, GF_PROP_PID_CODECID, GF_CODECID_AV1),
