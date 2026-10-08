@@ -12,5 +12,6 @@
     },
     "licence_required":false,
     "Format": ["WebM"],
-    "extension": {"webm": "video"}
+    "extension": {"webm": "video"},
+    "using": ["solver_1"]
 }
