@@ -2,7 +2,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later AND ISC
 
 webmdmx - WebM/Matroska demultiplexer accessor
 
-This accessor is a combined work: its filter sources come from GPAC, Copyright (c) Telecom Paris, under LGPL-2.1-or-later, adapted by Bevara (Copyright (c) 2026 Bevara); it includes nestegg (Copyright 2010 Mozilla Foundation) under the ISC licence.
+This accessor is a combined work: its filter sources come from GPAC, Copyright (c) Telecom Paris, under LGPL-2.1-or-later, adapted by Bevara Technologies, LLC (Copyright (c) 2026 Bevara Technologies, LLC); it includes nestegg (Copyright 2010 Mozilla Foundation) under the ISC licence.
 
 The texts of these licences follow.
 
