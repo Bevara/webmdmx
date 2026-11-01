@@ -13,7 +13,7 @@
     },
     "Format": ["WebM"],
     "extension": {"webm": "video"},
-    "using": ["mm_solver_1.0.1"],
+    "using": ["mm_solver_1.0.1", "mm_solver_1.0.2"],
     "patents": {
         "status": "royalty-free",
         "note": "WebM/Matroska container",
