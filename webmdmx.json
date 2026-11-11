@@ -2,18 +2,30 @@
     "name": "webmdmx",
     "version": "1.0.2",
     "description": "WebM/Matroska demultiplexer",
-    "filters":["webmdmx"],
+    "filters": [
+        "webmdmx"
+    ],
     "help": "This filter demultiplexes WebM/Matroska files using nestegg, exposing the AV1/VP8/VP9 video track (if any) for a downstream decoder (libaom for AV1, libvpx for VP8/VP9).",
     "support": [
         "video"
     ],
-    "sources":"https://bevara.ddns.net/sources/webmdmx.accessor",
-    "filter_source":{
-        "webmdmx" : "dmx_webm.c"
+    "sources": "https://bevara.ddns.net/sources/webmdmx.accessor",
+    "filter_source": {
+        "webmdmx": "dmx_webm.c"
     },
-    "Format": ["WebM"],
-    "extension": {"webm": "video"},
-    "using": ["mm_solver_1.0.1", "mm_solver_1.0.2", "mm_solver_1.0.3", "mm_solver_1.0.4"],
+    "Format": [
+        "WebM"
+    ],
+    "extension": {
+        "webm": "video"
+    },
+    "using": [
+        "mm_solver_1.0.1",
+        "mm_solver_1.0.2",
+        "mm_solver_1.0.3",
+        "mm_solver_1.0.4",
+        "mm_solver_1.0.5"
+    ],
     "patents": {
         "status": "royalty-free",
         "note": "WebM/Matroska container",
